@@ -24,21 +24,6 @@ class RancherServiceProvider extends ServiceProvider
     }
 
     /**
-     * Setup the config.
-     *
-     * @return void
-     */
-    protected function setupConfig()
-    {
-        $source = realpath(__DIR__ . '/../config/rancher.php');
-        if ( class_exists('Illuminate\Foundation\Application', false) )
-        {
-            $this->publishes([ $source => config_path('rancher.php') ], 'config');
-        }
-        $this->mergeConfigFrom($source, 'rancher');
-    }
-
-    /**
      * Register any package services.
      *
      * @return void
@@ -47,8 +32,7 @@ class RancherServiceProvider extends ServiceProvider
     {
         $this->app->singleton('rancher', function ($app)
         {
-            $config = $app['config']->get('rancher');
-            $client = new Factories\Client($config['baseUrl'], $config['accessKey'], $config['secretKey']);
+            $client = new Factories\Client(env('RANCHER_API_ENDPOINT'), env('RACNHER_API_ACCESSKEY'), env('RANCHER_API_SECRETKEY'));
             return new Rancher($client);
         });
 
